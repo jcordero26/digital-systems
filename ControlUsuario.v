@@ -19,7 +19,7 @@
 //
 //////////////////////////////////////////////////////////////////////////////////
 module ControlUsuario (
-	input clk, reset, BTNP, BTNR, BTNL, BTNU, BTND, CTRL_Switch, //Declarion de  entradas y salidas
+	input clk, reset, BTNP, BTNR, BTNL, BTNU, BTND, BTNST, BTNSF, //Declarion de  entradas y salidas
 	input [1:0] mstate,
 	output reg [3:0] state, dir , // variables de estado
 	output reg [7:0] diaw, mesw, annow, rhoraw, rminw, rsegw, thoraw, tminw, tsegw
@@ -43,8 +43,12 @@ parameter [3:0] A = 4'b1101;
 
 	always @(posedge clk) begin //Lógica de siguiente estado
 		case(state)
-			P0: next_state = (((mstate == 2'b10) || (mstate == 2'b11)) && (BTNP == 1'b0)) ? RoT:P0; //O tambien pueden ser las mismas senales de transicion de la Master
-			RoT: next_state = CTRL_Switch ? Trst: Rrst;
+			P0:  if (BTNSF)
+						next_state = Rrst;
+				  else if (BTNST)
+						next_state = Trst;
+				  else
+						next_state = P0;
 			Rrst: next_state = Rdia;					
 			Rdia: if (BTNP)
 						next_state = P0;
