@@ -1,21 +1,12 @@
 `timescale 1ns / 1ps
 //////////////////////////////////////////////////////////////////////////////////
-// Company:
-// Engineer:
-//
 // Create Date:    21:42:30 10/20/2016
-// Design Name:
 // Module Name:    top
-// Project Name:
-// Target Devices:
+// Project Name:   CONTROLADOR RTC CON PICOBLAZE
+// Target Devices:  ARTIX 7
 // Tool versions:
-// Description:
-//
-// Dependencies:
-//
-// Revision:
-// Revision 0.01 - File Created
-// Additional Comments:
+// Description:   modulo top para el control del teclado 
+// Additional Comments: hecho por JOAO SALAS
 //
 //////////////////////////////////////////////////////////////////////////////////
 module topkey(
@@ -23,7 +14,8 @@ module topkey(
   input ps2d,ps2c, rx_en,
   output wire [7:0] dout1,
   output wire rx_done_tick,
-  output  a,b,c,d,up,down,left,right
+  output  a,b,c,d,up,down,left,right,
+  output  a_vga_out,b_vga_out,c_vga_out,d_vga_out,up_vga_out,down_vga_out,left_vga_out,right_vga_out
   );
 
     wire [7:0] dout;
@@ -42,7 +34,15 @@ module topkey(
      keyout  KEY(
         .clk(clk),.reset(reset),.rx_done_tick(rx_done_tick),
         .keycodeout(dout),
-        .a(a),.b(b),.c(c),.d(d),.up(up),.down(down),.left(left),.right(right)
+        .a(a),.b(b),.c(c),.d(d),.up(up),.down(down),.left(left),.right(right),
+         .a_vga_out(a_vga_out),
+         .b_vga_out(b_vga_out),
+         .c_vga_out(c_vga_out),
+         .d_vga_out(d_vga_out),
+         .up_vga_out(up_vga_out),
+         .down_vga_out(down_vga_out),
+         .left_vga_out(left_vga_out),
+         .right_vga_out(right_vga_out)
         );
 
 

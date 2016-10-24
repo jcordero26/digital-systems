@@ -1,21 +1,14 @@
 `timescale 1ns / 1ps
 //////////////////////////////////////////////////////////////////////////////////
-// Company:
-// Engineer:
-//
 // Create Date:    20:08:44 10/20/2016
 // Design Name:
 // Module Name:    ps2_portreceiver
-// Project Name:
-// Target Devices:
+// Project Name:    CONTROLADOR RTC CON PICOBLAZE
+// Target Devices:  artix 7
 // Tool versions:
-// Description:
-//
-// Dependencies:
-//
-// Revision:
-// Revision 0.01 - File Created
-// Additional Comments:
+// Description:   modulo para la recepcion de datos del teclado, genera una registro con la
+//                tecla que se presiono
+// Additional Comments: tomado del libro de Pong Chu
 //
 //////////////////////////////////////////////////////////////////////////////////
 module ps2_portreceiver(
