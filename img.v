@@ -1,28 +1,17 @@
 `timescale 1ns / 1ps
 //////////////////////////////////////////////////////////////////////////////////
-// Company:
-// Engineer:
-//
-// Create Date:    22:21:15 10/14/2016
+e:    22:21:15 10/14/2016
 // Design Name:
 // Module Name:    img
-// Project Name:
-// Target Devices:
-// Tool versions:
-// Description:
-//
-// Dependencies:
-//
-// Revision:
-// Revision 0.01 - File Created
-// Additional Comments:
+
+
+
 //CREADO POR: JOAO SALAS
 ////////IMAGENES PARA LA PANTALLA VGA /////////////////////////////////
 module img(
        input  clk,reset,
        input aI,bI,cI,dI,upI,downI,leftI,rightI,
        input [9:0] pixel_x, pixel_y,
-
        output [11:0] rgb  //bits de color hacia la VGA
 );
 
@@ -34,13 +23,13 @@ module img(
 //                FLECHAS
 
 // fecflecha arriba: tamaño en pixeles, largo en x y Y, inicio y fin en pantalla
-parameter arrow = 10200;   //cantidad de pixeles de la imagen
+parameter arrow = 8280;   //cantidad de pixeles de la imagen
 parameter arrowX = 120;    //largo en x
-parameter arrowY = 85;     //ancho en y
+parameter arrowY = 69;     //ancho en y
 parameter endarrowX = 580;  //fin en pantalla, eje x
-parameter endarrowY = 272;  //fin en pantalla, eje y
+parameter endarrowY = 270;  //fin en pantalla, eje y
 parameter beginarrowX = 460; //inicio en pantalla en el eje x
-parameter beginarrowY = 187; //inicio en pantalla en el eje y
+parameter beginarrowY = 201; //inicio en pantalla en el eje y
 
 
 //                 LETRAS
@@ -106,29 +95,29 @@ parameter endpfechaY = 89;
 parameter phora = 850;
 parameter phoraX = 50;
 parameter phoraY = 17;
-parameter beginphoraX = 493;
+parameter beginphoraX = 491;
 parameter beginphoraY = 102;
-parameter endphoraX = 543;
+parameter endphoraX = 541;
 parameter endphoraY = 119;
 
 // alarma: tamaño en pixeles, largo en x y Y, inicio y fin en pantalla
 
-parameter alarma = 480;
-parameter alarmaX = 30;
-parameter alarmaY = 16;
-parameter beginalarmaX = 500;
+parameter alarma = 850;
+parameter alarmaX = 50;
+parameter alarmaY = 17;
+parameter beginalarmaX = 491;
 parameter beginalarmaY = 128;
-parameter endalarmaX = 530;
-parameter endalarmaY = 144;
+parameter endalarmaX = 541;
+parameter endalarmaY = 145;
 
 // enter: tamaño en pixeles, largo en x y Y, inicio y fin en pantalla
 
 parameter enter = 650;
 parameter enterX = 50;
 parameter enterY = 13;
-parameter beginenterX = 493;
+parameter beginenterX = 491;
 parameter beginenterY = 160;
-parameter endenterX = 543;
+parameter endenterX = 541;
 parameter endenterY = 173;
 
 //-------------------------------------------------------------------------------------------------------------------------
@@ -170,7 +159,7 @@ parameter endenterY = 173;
       reg [4:0]Selector;    //SELECCION EN LOS CASES
       reg  [3:0] Numero;
       wire [15:0]Adress1;
-      reg  [8:0]Y;       //Resta en Y
+      reg  [8:0]Y;       //Resta en Y =9'h1FF
       reg  [8:0]X;        //Resta en X
       reg  [8:0]MUL;      //Multiplica por parametro
       reg [15:0]Adress;
@@ -184,50 +173,50 @@ parameter endenterY = 173;
 //FLECHAS EN PANTALLA
 always @(posedge clk) begin
       if(reset)
-          Selector<=0;
+          Selector<=5'h0;
 
       else begin
 
       //up arrow
-      		if((beginarrowX < pixel_x) && (pixel_x < endarrowX) && (beginarrowY < pixel_y) && (pixel_y < endarrowY)) begin
+      		if((beginarrowX <= pixel_x) && (pixel_x < endarrowX) && (beginarrowY < pixel_y) && (pixel_y < endarrowY)) begin
                 Selector <= 5'h1;
             end
 
       //siguen las letras del teclado
 
       //-------letra A
-        	else if((beginAX < pixel_x) && (pixel_x < endAX) && (beginAY < pixel_y) && (pixel_y < endAY))begin
+        	else if((beginAX <= pixel_x) && (pixel_x < endAX) && (beginAY < pixel_y) && (pixel_y < endAY))begin
                   Selector <= 5'h5;
               end
       //-------LETRA B
-          else if((beginBX < pixel_x) && (pixel_x < endBX) && (beginBY < pixel_y) && (pixel_y < endBY))begin
+          else if((beginBX <= pixel_x) && (pixel_x < endBX) && (beginBY < pixel_y) && (pixel_y < endBY))begin
                   Selector <= 5'h6;
               end
       //-----------LETRA C
-          else if((beginCX < pixel_x) && (pixel_x < endCX) && (beginCY < pixel_y) && (pixel_y < endCY))begin
+          else if((beginCX <= pixel_x) && (pixel_x < endCX) && (beginCY < pixel_y) && (pixel_y < endCY))begin
                   Selector <= 5'h7;
               end
       //---------LETRA D
-        	else if((beginDX < pixel_x) && (pixel_x < endDX) && (beginDY < pixel_y) && (pixel_y < endDY))begin
+        	else if((beginDX <= pixel_x) && (pixel_x < endDX) && (beginDY < pixel_y) && (pixel_y < endDY))begin
                   Selector <= 5'h8;
               end
 
       //FIN DE LAS LETRAS ... comienzan los textos informativos
 
       //  fecha
-          else if((beginpfechaX < pixel_x) && (pixel_x < endpfechaX) && (beginpfechaY < pixel_y) && (pixel_y < endpfechaY))begin
+          else if((beginpfechaX <= pixel_x) && (pixel_x < endpfechaX) && (beginpfechaY < pixel_y) && (pixel_y < endpfechaY))begin
                   Selector <= 5'h9;
               end
       //  hora
-          else if((beginphoraX < pixel_x) && (pixel_x < endphoraX) && (beginphoraY < pixel_y) && (pixel_y < endphoraY))begin
+          else if((beginphoraX <= pixel_x) && (pixel_x < endphoraX) && (beginphoraY < pixel_y) && (pixel_y < endphoraY))begin
                   Selector <= 5'hA;
               end
       //  alarma
-          else if((beginalarmaX < pixel_x) && (pixel_x < endalarmaX) && (beginalarmaY < pixel_y) && (pixel_y < endalarmaY))begin
+          else if((beginalarmaX <= pixel_x) && (pixel_x < endalarmaX) && (beginalarmaY < pixel_y) && (pixel_y < endalarmaY))begin
                   Selector <= 5'hB;
                end
       //  enter
-          else if((beginenterX < pixel_x) && (pixel_x < endenterX) && (beginenterY < pixel_y) && (pixel_y < endenterY))begin
+          else if((beginenterX <= pixel_x) && (pixel_x < endenterX) && (beginenterY < pixel_y) && (pixel_y < endenterY))begin
                   Selector <= 5'hC;
               end
       //  else
@@ -281,28 +270,23 @@ end
 //          Cuerpo del modulo
 //---------------------------------------------------
 
-always @(posedge clk) begin //Dependiendo de el lugar de selector se escogen los paramentros a operar
-    if(reset) begin
-          Y <= 0; X <= 0; MUL <= 0;
-    end
-    else begin
+always @(*) begin //Dependiendo de el lugar de selector se escogen los paramentros a operar
           case(Selector)
-              5'h0 : begin Y <= Y; X <= X; MUL <= MUL;  end  //default
+              5'h0 : begin Y = 0; X= 0; MUL= 0;  end  //default
               //flechas
-              5'h1 : begin Y <= beginarrowY; X <= beginarrowX; MUL <= arrowY;  end
+              5'h1 : begin Y = beginarrowY; X = beginarrowX; MUL = arrowY;  end
               //letras
-              5'h5 : begin Y <= beginAY; X <= beginAX; MUL <= AY;  end
-              5'h6 : begin Y <= beginBY; X <= beginBX; MUL <= BY;  end
-              5'h7 : begin Y <= beginCY; X <= beginCX; MUL <= CY;  end
-              5'h8 : begin Y <= beginDY; X <= beginDX; MUL <= DY;  end
+              5'h5 : begin Y = beginAY; X = beginAX; MUL = AY;  end
+              5'h6 : begin Y = beginBY; X = beginBX; MUL = BY;  end
+              5'h7 : begin Y = beginCY; X = beginCX; MUL = CY;  end
+              5'h8 : begin Y = beginDY; X = beginDX; MUL = DY;  end
               //text
-              5'h9 : begin Y <= beginpfechaY; X <= beginpfechaX; MUL <= pfechaY;  end
-              5'hA : begin Y <= beginphoraY; X <= beginphoraX; MUL <= phoraY;  end
-              5'hB : begin Y <= beginalarmaY; X <= beginalarmaX; MUL <= alarmaY;  end
-              5'hC : begin Y <= beginenterY; X <= beginenterX; MUL <= enterY;  end
-              default: begin Y <= Y; X <= X; MUL <= MUL;  end
+              5'h9 : begin Y = beginpfechaY; X = beginpfechaX; MUL = pfechaY;  end
+              5'hA : begin Y = beginphoraY; X = beginphoraX; MUL = phoraY;  end
+              5'hB : begin Y = beginalarmaY; X = beginalarmaX; MUL = alarmaY;  end
+              5'hC : begin Y = beginenterY; X = beginenterX; MUL = enterY;  end
+              default: begin Y = beginarrowY; X = beginarrowX; MUL = arrowY;  end
           endcase
-    end
 end
 
 
@@ -341,7 +325,7 @@ always @(posedge clk) begin
       5'hB  : Numero <= 4'h3;
       5'hC  : Numero <= 4'h2;
 
-		  default Numero <= 4'hF;
+		  default Numero <= 4'h0;
 		endcase
 	end
 end
@@ -353,11 +337,10 @@ end
 
 always @(posedge clk) begin
     if(reset)
-          COLOR_IN<=0;
+          COLOR_IN<=12'h000;
     else
   	begin
   		case (Numero)
-
       4'hF : COLOR_IN <= 12'h000; //negro
 
       4'hD :begin
@@ -414,5 +397,21 @@ end
 //-----------------------------------------------------------------------------------------
 
 assign rgb = COLOR_IN;
+/*
+assign rgb[0] = COLOR_IN[11];
+assign rgb[1] = COLOR_IN[11];
+assign rgb[2] = COLOR_IN[11];
+assign rgb[3] = COLOR_IN[11];
 
+assign rgb[4] = COLOR_IN[11];
+assign rgb[5] = COLOR_IN[11];
+assign rgb[6] = COLOR_IN[11];
+assign rgb[7] = COLOR_IN[11];
+
+assign rgb[8] = COLOR_IN[11];
+assign rgb[9] = COLOR_IN[11];
+assign rgb[10] = COLOR_IN[11];
+assign rgb[11] = COLOR_IN[11];
+
+*/
 endmodule
