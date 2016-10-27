@@ -10,11 +10,8 @@
 // Project Name:  VGAPICOBLAZE
 // Target Device:  
 // Tool versions:  
-// Description: 
-//
-// Verilog Test Fixture created by ISE for module: VGATOP
-//
-// Dependencies:
+// Description: testbench para el controlador vga, se puede comprobar la pantalla en un txt dentro del directorio del proyecto
+//HECHO POR JOAO SALAS
 // 
 // Revision:
 // Revision 0.01 - File Created
