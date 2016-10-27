@@ -25,9 +25,9 @@ module RING(
 				parameter ghostX = 60;     //largo en x
 				parameter ghostY = 72;     //ancho en y
 				parameter InicioghostX = 460; // coordenada de inicio en pantalla en el eje x
-				parameter InicioghostY = 315;  // coordenada de inicio en pantalla en el eje y
+				parameter InicioghostY = 330;  // coordenada de inicio en pantalla en el eje y
 				parameter FinghostX =520;  // coordenada de finalizacion en pantalla en el eje x
-				parameter FinghostY = 387;  // coordenada de finalizacion en pantalla en el eje y
+				parameter FinghostY = 402;  // coordenada de finalizacion en pantalla en el eje y
 
 	//---------------------------------------------------------------
 	//             DECLARACION DE REGISTROS Y WIRES A UTILIZAR
@@ -38,7 +38,7 @@ module RING(
 	      reg [4:0]  Selector; //selector para los cases
 	      reg  [3:0]Numero; //selector para el color de salida
 	      wire [15:0]Adress1;
-				reg [15:0]Adress; //direcciones en la memoria, reg and wire
+		  	reg [15:0]Adress; //direcciones en la memoria, reg and wire
 	      reg  [8:0]Y; //Resta en Y
 	      reg  [8:0]X; //Resta en X
 	      reg  [8:0]MUL; //Multiplica por parametro
@@ -61,7 +61,7 @@ assign phantom = ((InicioghostX < pixel_x) && (pixel_x < FinghostX) && (Iniciogh
 
 	always @(posedge clk) begin  //seleccion de acuerdo a la coordenada
 			if(reset)
-					Selector<=0;
+					Selector<=5'h0;
 			else begin
 				  if (phantom)
 			        Selector <= 5'h1;
@@ -80,19 +80,12 @@ assign phantom = ((InicioghostX < pixel_x) && (pixel_x < FinghostX) && (Iniciogh
 //secuencia para recorrer la memoria
 //--------------------------------------------------
 
-always @(posedge clk) begin //Dependiendo de el lugar de selector se escogen los paramentros a operar
-		if(reset) begin
-						Y   <= 9'h000;
-						X   <= 9'h000;
-						MUL <= 9'h000;
-						end
-		else begin
+always @(*) begin //Dependiendo de el lugar de selector se escogen los paramentros a operar
 			  case(Selector)
-			      5'h0 : begin Y <= Y; X= X; MUL<= MUL;  end
-			      5'h1 : begin Y <= InicioghostY; X<=InicioghostX; MUL<= ghostY;end
-			      default: begin Y <= 0; X<= 0; MUL<= 0; end
+			      5'h0 : begin Y = 0; X= 0; MUL= 0;  end
+			      5'h1 : begin Y = InicioghostY; X=InicioghostX; MUL= ghostY;end
+			      default: begin Y = InicioghostY; X=InicioghostX; MUL= ghostY;end
 			  endcase
-			end
 end
 
 
@@ -109,12 +102,12 @@ always @(posedge clk) begin
 
 always @(posedge clk) begin
 		if(reset)
-							Numero<=0;
+							Numero<= 4'h0;
 		else begin
 			case (Selector)
 				      5'h0  : Numero <= 4'hF;
 				      5'h1  : Numero <= 4'hB;
-							default: Numero <= 4'hF;
+							default: Numero <= 4'h0;
 			endcase
 		end
 end
@@ -125,7 +118,7 @@ end
 
 always @(posedge clk) begin   //de acuerdo al selector se asigna la imagen en memoria que corresponde
 			if(reset)
-							COLOR_IN<=0;
+							COLOR_IN<=12'h000;
 			else begin
 	  		case (Numero)
 				      4'hF : COLOR_IN <= 12'h000;
@@ -155,9 +148,9 @@ always @(posedge clk) begin
 				enable<=0;
 		else begin
 				if (contador<40)
-						enable=1;
+						enable<=1;
 				else
-						enable=0;
+						enable<=0;
 				end
 end
 
