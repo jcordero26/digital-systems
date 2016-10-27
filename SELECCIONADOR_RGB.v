@@ -15,11 +15,10 @@ module SELECCIONADOR_RGB(
     input wire video_on,reset,
     input wire [9:0] pix_x,pix_y,
     input wire [11:0] rgb_numero_hora,rgb_numero_fecha,rgb_numero_timer,
-    input wire [11:0] rgb_ring,rgb_letra,rgb_bordes,rgb_simbolo,rgb_imagen,
+    input wire [11:0] rgb_ring,rgb_letra,rgb_bordes,rgb_simbolo,rgb_imagen,rgb_animado,
     output wire [11:0] rgb_screen,
     output reg okh,okf,okt
     );
-
 
 //--------------------------------------------------
 //      declaracion de wires a utilizar
@@ -34,11 +33,13 @@ module SELECCIONADOR_RGB(
         wire teclado_word;
         wire ring_word;
         wire  onfoto;
+        wire animation;
 
 //------------------------------------------------------------------------------
 //      VARIABLES DE CONTROL PARA ACTIVAR LA IMAGEN ADECUADA
 //-----------------------------------------------------------------------------
-
+//NOTA: NO SE ASIGNAN PARAMETROS YA QUE SON LOS MISMOS DE LOS MODULOS ANTERIORES, SOLO SE COPIAN LOS VALORES NUMERICOS.
+//      EN CASO DE REALIZARSE MULTIPLES CAMBIOS SI ES NECESARIO CAMBIAR ESTE MODULO, SI NO SE MANTIENE INTACTO
 //                       para numeros
 
     assign hour1on=(96<=pix_x) && (pix_x<=159) &&(64<=pix_y) && (pix_y<=127);
@@ -56,12 +57,12 @@ module SELECCIONADOR_RGB(
 
 //            para puntos separadores de hora fecha y crono
 
-    assign ruedaon1_on  = (180 <= pix_x) && (pix_x <= 210) && (68 <= pix_y) && (pix_y <= 124);
-    assign ruedaon1_on2 = (180 <= pix_x) && (pix_x <= 210) && (324 <= pix_y) && (pix_y <= 380);
-    assign ruedaon1_on3 = (308 <= pix_x) && (pix_x <= 333) && (68 <= pix_y) &&  (pix_y <= 124);
-    assign ruedaon1_on4 = (308 <= pix_x) && (pix_x <= 333) &&(324 <= pix_y) && (pix_y <= 380);
-    assign barrafecha_on=((184<=pix_x) && (pix_x<=205) && (188<=pix_y) && (pix_y<=260))|
-         ((310<=pix_x) && (pix_x<=331) && (188<=pix_y) && (pix_y<=260));
+    assign ruedaon1_on  = (180 < pix_x) && (pix_x < 206) && (68 < pix_y) && (pix_y < 124);
+    assign ruedaon1_on2 = (180 < pix_x) && (pix_x < 206) && (324 < pix_y) && (pix_y < 380);
+    assign ruedaon1_on3 = (308 < pix_x) && (pix_x < 332) && (68 < pix_y) &&  (pix_y < 124);
+    assign ruedaon1_on4 = (308 < pix_x) && (pix_x < 332) &&(324 < pix_y) && (pix_y < 380);
+    assign barrafecha_on=((185<pix_x) && (pix_x<205) && (188<pix_y) && (pix_y<260))|
+         ((311<pix_x) && (pix_x<331) && (188<pix_y) && (pix_y<260));
 
 //                para el texto informativo
 
@@ -71,11 +72,14 @@ module SELECCIONADOR_RGB(
     assign teclado_word=(470<=pix_x) && (pix_x<=565) &&(36<=pix_y) && (pix_y<=60);
 
 //                      para RING
-    assign ring_word=(460<=pix_x) && (pix_x<=520) &&(315<=pix_y) && (pix_y<=387);
+    assign ring_word=(460<=pix_x) && (pix_x<=520) &&(330<=pix_y) && (pix_y<=402);
 
 //        para las imagenes informativos del teclado y otros
 
-    assign onfoto =(460<=pix_x) && (pix_x<=580) &&(64<=pix_y) && (pix_y<=272);
+    assign onfoto =(460<pix_x) && (pix_x<580) &&(64<pix_y) && (pix_y<272);
+    assign animation =(460<pix_x) && (pix_x<575) &&(277<pix_y) && (pix_y<293);
+
+
 
 
 //NOTA:  PARA LOS BORDES ES EL ELSE
@@ -130,6 +134,8 @@ always@(posedge clk)
 
               else if(onfoto)   //IMAGENES CON INFORMACION DE PROPOSITO GENERAL
                       rgb_screenreg <= rgb_imagen;
+              else if(animation)   //IMAGENES CON INFORMACION DE PROPOSITO GENERAL
+                      rgb_screenreg <= rgb_animado;
 
               else    //BORDES QUE ENCIERRAN EL RELOJ
                       rgb_screenreg <= rgb_bordes;
