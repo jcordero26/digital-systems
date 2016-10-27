@@ -17,23 +17,6 @@ input clk,reset,
 output wire [11:0] rgbtext
 );
 
-//---------------------------------------------------------------
-//             DECLARACION DE REGISTROS Y WIRES A UTILIZAR
-//--------------------------------------------------------------
-
-
-    reg  [3:0]Numero_RTC ;
-    wire [15:0]Adress1;
-    reg  [8:0]Y  ; //Resta en Y
-    reg  [8:0]X  ; //Resta en X
-    reg  [8:0]MUL ; //Multiplica por parametro
-    reg [15:0]Adress;
-    reg [11:0]  PUNTOS_DATA[0:puntos]; //Memoria donde se almacena los datos de plantilla 1
-    reg [11:0]  SLASH_DATA[0:slash]; //Memoria donde se almacena los datos de plantilla 2
-    reg [11:0] COLOR_IN;                    //COLOR DE SALIDA
-    reg [4:0]  Selector; //SELECCION EN LOS CASES
-    wire ruedaon1_on,ruedaon1_on2,ruedaon1_on3,ruedaon1_on4;
-    wire barrafecha_on,barrafecha_on2;
 
 //---------------------------------------------------------------
 //                    PARAMETROS DE LAS IMAGENES
@@ -41,7 +24,7 @@ output wire [11:0] rgbtext
 
 //  PARA PUNTOS
 
-parameter puntos = 12'd1399;
+parameter puntos = 1400;
 parameter puntosX = 25;
 parameter puntosY = 56;
 
@@ -88,6 +71,26 @@ parameter FinslashX2 = 331;
 parameter FinslashY2 = 260;
 
 
+//---------------------------------------------------------------
+//             DECLARACION DE REGISTROS Y WIRES A UTILIZAR
+//--------------------------------------------------------------
+
+
+    reg  [3:0]Numero_RTC ;
+    wire [15:0]Adress1;
+    reg  [8:0]Y ; //Resta en Y
+    reg  [8:0]X  ; //Resta en X
+    reg  [8:0]MUL ; //Multiplica por parametro
+    reg [15:0]Adress;
+    reg [11:0]  PUNTOS_DATA[0:puntos]; //Memoria donde se almacena los datos de plantilla 1
+    reg [11:0]  SLASH_DATA[0:slash]; //Memoria donde se almacena los datos de plantilla 2
+    reg [11:0] COLOR_IN;                    //COLOR DE SALIDA
+    reg [4:0]  Selector; //SELECCION EN LOS CASES
+    wire ruedaon1_on,ruedaon1_on2,ruedaon1_on3,ruedaon1_on4;
+    wire barrafecha_on,barrafecha_on2;
+
+
+
 //-----------------------------------------
 //    CUERPO
 //-----------------------------------------
@@ -96,20 +99,19 @@ parameter FinslashY2 = 260;
 //      habilitadores de acuerdo a la coordenada actual
 
 
-assign ruedaon1_on = (IniciopuntosX <= pix_x) && (pix_x <= FinpuntosX) && (IniciopuntosY <= pix_y) && (pix_y <= FinpuntosY);
-assign ruedaon1_on2 =  (IniciopuntosX2 <= pix_x) && (pix_x <= FinpuntosX2) && (IniciopuntosY2 <= pix_y) && (pix_y <= FinpuntosY2);
-assign ruedaon1_on3 = (IniciopuntosX3 <= pix_x) && (pix_x <= FinpuntosX3) && (IniciopuntosY3 <= pix_y) &&  (pix_y <= FinpuntosY3);
-assign ruedaon1_on4 =  (IniciopuntosX4 <= pix_x) && (pix_x <= FinpuntosX4) &&(IniciopuntosY4 <= pix_y) && (pix_y <= FinpuntosY4);
+assign ruedaon1_on = (IniciopuntosX < pix_x) && (pix_x < FinpuntosX) && (IniciopuntosY < pix_y) && (pix_y < FinpuntosY);
+assign ruedaon1_on2 =  (IniciopuntosX2 < pix_x) && (pix_x < FinpuntosX2) && (IniciopuntosY2 < pix_y) && (pix_y < FinpuntosY2);
+assign ruedaon1_on3 = (IniciopuntosX3 < pix_x) && (pix_x < FinpuntosX3) && (IniciopuntosY3 < pix_y) &&  (pix_y < FinpuntosY3);
+assign ruedaon1_on4 =  (IniciopuntosX4 < pix_x) && (pix_x < FinpuntosX4) &&(IniciopuntosY4 < pix_y) && (pix_y < FinpuntosY4);
 
-assign barrafecha_on = (InicioslashX<=pix_x) && (pix_x<=FinslashX) && (InicioslashY<=pix_y) && (pix_y<=FinslashY);
-assign barrafecha_on2 = (InicioslashX2<=pix_x) && (pix_x<=FinslashX2) && (InicioslashY2<=pix_y) && (pix_y<=FinslashY2);
-
+assign barrafecha_on = (InicioslashX<pix_x) && (pix_x<FinslashX) && (InicioslashY<pix_y) && (pix_y<FinslashY);
+assign barrafecha_on2 = (InicioslashX2<pix_x) && (pix_x<FinslashX2) && (InicioslashY2<=pix_y) && (pix_y<FinslashY2);
 
 
 
 always @(posedge clk) begin
     if(reset)
-        Selector<=0;
+        Selector<=5'h0;
 else begin
         //PUNTOS
         if (ruedaon1_on)
@@ -143,25 +145,21 @@ end
 //       secuencia para recorrer la memoria
 //--------------------------------------------------
 
-always @(posedge clk) begin
-    if(reset)begin
-            Y <= 0; X <= 0; MUL <= 0;end
-   else
-    	begin
+always @(*) begin
       case(Selector)
-          5'h0 : begin Y <= Y; X<= X; MUL<= MUL;  end
-          5'h1 : begin Y <= IniciopuntosY; X <= IniciopuntosX; MUL<= puntosY;  end
-          5'h2 : begin Y <= IniciopuntosY2; X <= IniciopuntosX2; MUL<= puntosY;  end
-          5'h3 : begin Y <= IniciopuntosY3; X<=IniciopuntosX3; MUL<= puntosY;  end
-          5'h4 : begin Y <= IniciopuntosY4; X<= IniciopuntosX4; MUL<= puntosY;  end
+          5'h0 : begin Y = 0; X= 0; MUL= 0;  end
+          5'h1 : begin Y = IniciopuntosY; X = IniciopuntosX; MUL= puntosY;  end
+          5'h2 : begin Y = IniciopuntosY2; X = IniciopuntosX2; MUL= puntosY;  end
+          5'h3 : begin Y = IniciopuntosY3; X=IniciopuntosX3; MUL= puntosY;  end
+          5'h4 : begin Y = IniciopuntosY4; X= IniciopuntosX4; MUL= puntosY;  end
 
-          5'h5 : begin Y <= InicioslashY; X<= InicioslashX; MUL<= slashY;  end
-          5'h6 : begin Y <= InicioslashY2; X<= InicioslashX2; MUL<= slashY;  end
+          5'h5 : begin Y = InicioslashY; X= InicioslashX; MUL= slashY;  end
+          5'h6 : begin Y = InicioslashY2; X= InicioslashX2; MUL = slashY;  end
 
-          default: begin Y <= Y; X<= X; MUL<= MUL; end
+          default:begin Y = IniciopuntosY; X = IniciopuntosX; MUL= puntosY;  end
     	  endcase
-    	end
-    end
+
+end
 
 
 	assign Adress1 = (pix_y - Y) + (pix_x - X)*MUL;
@@ -192,7 +190,7 @@ always @(posedge clk)begin
           5'h5  : Numero_RTC <= 4'hC;
           5'h6  : Numero_RTC <= 4'hC;
 
-        default Numero_RTC <= 4'hF;
+        default Numero_RTC <= 4'h0;
         endcase
     end
 end
