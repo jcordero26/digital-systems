@@ -20,7 +20,7 @@
 //////////////////////////////////////////////////////////////////////////////////
 module TEXTO(
 	 input [9:0] pixel_y, pixel_x,
-	 input clk,
+	 input clk,reset,
 	 output [11:0] rgbtext
     );
 
@@ -81,7 +81,7 @@ module TEXTO(
 		      reg  [3:0]Numero_RTC;
 		      wire [15:0]Adress1;
 		      reg  [8:0]Y ; //Resta en Y
-		      reg  [8:0]X ; //Resta en X
+		      reg  [8:0]X; //Resta en X
 		      reg  [8:0]MUL; //Multiplica por parametro
 		      reg [15:0]Adress;
 
@@ -91,7 +91,7 @@ module TEXTO(
 
 always @(posedge clk) begin
 		if(reset)
-					Selector<=0;
+					Selector<=5'h0;
 		else begin
 				if((IniciofechaX < pixel_x) && (pixel_x < FinfechaX) && (IniciofechaY < pixel_y) && (pixel_y < FinfechaY))
 		      Selector <= 5'h1;
@@ -99,7 +99,7 @@ always @(posedge clk) begin
 		      Selector <= 5'h2;
 		    else if((IniciohoraX < pixel_x) && (pixel_x < FinhoraX) && (IniciohoraY < pixel_y) && (pixel_y < FinhoraY))
 		        Selector <= 5'h3;
-				else if((IniciotecladoX < pixel_x) && (pixel_x < FintecladoX) && (IniciotecladoY < pixel_y) && (pixel_y < FintecladoY))
+				else if((IniciotecladoX < pixel_x) && (pixel_x < FintecladoX) && (IniciotecladoY <= pixel_y) && (pixel_y < FintecladoY))
 				      Selector <= 5'h4;
 		    else
 		      Selector <= 5'h0;
@@ -119,20 +119,15 @@ end
 //       secuencia para recorrer la memoria
 //--------------------------------------------------
 
-always @(posedge clk) begin
-		if(reset) begin
-					Y <= 0; X<=0; MUL<=0;
-				  end
-		else begin
+always @(*) begin
 		  case(Selector)
-			      5'h0 : begin Y <= Y; X <= X; MUL <= MUL;  end
-			      5'h1 : begin Y <= IniciofechaY; X <= IniciofechaX; MUL <= fechaY;  end
-			      5'h2 : begin Y <= IniciotimerY; X <= IniciotimerX; MUL <= timerY;  end
-			      5'h3 : begin Y <= IniciohoraY; X <=IniciohoraX; MUL <= horaY;  end
-						5'h4 : begin Y <= IniciotecladoY; X <= IniciotecladoX; MUL <= tecladoY;  end
-			      default begin Y <= Y; X<= X; MUL <= MUL; end
+			      5'h0 : begin Y = 0; X= 0; MUL= 0;  end
+			      5'h1 : begin Y = IniciofechaY; X = IniciofechaX; MUL = fechaY;  end
+			      5'h2 : begin Y = IniciotimerY; X = IniciotimerX; MUL = timerY;  end
+			      5'h3 : begin Y = IniciohoraY; X =IniciohoraX; MUL = horaY;  end
+						5'h4 : begin Y = IniciotecladoY; X = IniciotecladoX; MUL = tecladoY;  end
+			      default: begin Y = IniciofechaY; X = IniciofechaX; MUL = fechaY; end
 		  endcase
-		end
 end
 
 		assign Adress1 = (pixel_y - Y) + (pixel_x - X)*MUL; //Establecimieto de puntero para memoria de plantilla
@@ -156,7 +151,7 @@ always @(posedge clk) begin
 		      5'h2  : Numero_RTC <= 4'hC;
 		      5'h3  : Numero_RTC <= 4'hD;
 					5'h4  : Numero_RTC <= 4'hA;
-		   		default Numero_RTC <= 4'hF;
+		   		default Numero_RTC <= 4'h0;
 			endcase
 		end
 end
@@ -180,7 +175,19 @@ always @(posedge clk) begin
 end
 
 //salida final rgb
+assign rgbtext[0] = COLOR_IN[11];
+assign rgbtext[1] = COLOR_IN[11];
+assign rgbtext[2] = COLOR_IN[11];
+assign rgbtext[3] = COLOR_IN[11];
 
-assign rgbtext = COLOR_IN;
+assign rgbtext[4] = COLOR_IN[11];
+assign rgbtext[5] = COLOR_IN[11];
+assign rgbtext[6] = COLOR_IN[11];
+assign rgbtext[7] = COLOR_IN[11];
+
+assign rgbtext[8] = COLOR_IN[11];
+assign rgbtext[9] = COLOR_IN[11];
+assign rgbtext[10] = COLOR_IN[11];
+assign rgbtext[11] = COLOR_IN[11];
 
 endmodule
