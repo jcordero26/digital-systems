@@ -7,15 +7,9 @@
 // Design Name:
 // Module Name:    animado
 // Project Name:
-// Target Devices:
-// Tool versions:
-// Description:
-//
-// Dependencies:
-//
-// Revision:
-// Revision 0.01 - File Created
-// Additional Comments:
+
+
+// Additional Comments: hecho por joao salas
 //
 //////////////////////////////////////////////////////////////////////////////////
 module animado(
