@@ -13,56 +13,58 @@
 ///////////////////////////////////////////////////////////////////////////////////
 module VGATOP(
 	 input wire clk,reset,
+	 input ps2d,ps2c, rx_en,
    input activar_alarma,
    output wire hsync, vsync,
-   output video_on1,
-   output wire [11:0] rgb,
-	 output wire [11:0] rgbIMAGE,
-   output [9:0] pixX,pixY,
-   input [7:0] hour_in1,hour_in2,hour_in3,
-   input wire [7:0] fecha_in1,fecha_in2,fecha_in3,
-	 input wire [7:0] timer_in1,timer_in2,timer_in3,
+     output wire [11:0] rgb,
+  output [9:0] pixX,pixY,
+input [7:0] hour_in1,hour_in2,hour_in3,
+input wire [7:0] fecha_in1,fecha_in2,fecha_in3,
+input wire [7:0] timer_in1,timer_in2,timer_in3,
 
-	//input [7:0] hour_in1,
+//	input [7:0] hour_in1,
 	input programar_on,
 	input [3:0] direccion_actual_pantalla
 );
 
+wire a,b,c,d,up,down,left,right;
 
+//de prueba
+/*
+wire [7:0] hour_in2,hour_in3;
+wire [7:0] fecha_in1,fecha_in2,fecha_in3;
+wire [7:0] timer_in1,timer_in2,timer_in3;
+
+assign{hour_in2,hour_in3,fecha_in1,fecha_in2,fecha_in3,timer_in1,timer_in2,timer_in3}=
+			{hour_in1,hour_in1,hour_in1,hour_in1,hour_in1,hour_in1,hour_in1,hour_in1};
+*/
 //-----------------------------------------------------------------------------------------------------
 //					WIRES Y REGS DE PROPOSITO GENERAL: PARA TESTBENCH O CONEXION FINAL PARA LA IMPLEMENTACION
 //-----------------------------------------------------------------------------------------------------
 
   wire [9:0] pixel_y,pixel_x;
   wire video_on , pixel_tick;
-  reg [11:0] rgb_reg;
-  wire [11:0] rgb_next;
+
 	wire [11:0] rgb_ring,rgb_letra,rgb_bordes;
-  reg [11:0] rgb_ring_reg;
-  reg [11:0]rgb_letra_reg;
-  reg [11:0]rgb_bordes_reg;
+
   wire [11:0] rgb_ring_next,rgb_letra_next,rgb_bordes_next;
 
 	//para numeros
 	wire [11:0] rgb_numero_hora;
-	wire [11:0] rgb_numero_hora_next;
-	reg [11:0] rgb_numero_hora_reg;
+
 
 	wire [11:0] rgb_numero_fecha;
-	wire [11:0] rgb_numero_fecha_next;
-	reg [11:0] rgb_numero_fecha_reg;
+
 
 	wire [11:0] rgb_numero_timer;
-	wire [11:0] rgb_numero_timer_next;
-	reg [11:0] rgb_numero_timer_reg;
+
 
 	wire [11:0] rgb_simbolo;
-	wire [11:0] rgb_simbolo_next;
-	reg [11:0] rgb_simbolo_reg;
+
 
 	wire [11:0] rgb_imagenes;
-	wire [11:0] rgb_imagenes_next;
-	reg [11:0] rgb_imagenes_reg;
+
+  wire [11:0] rgb_animado;
 
 	wire okh,okf,okt;
 
@@ -71,13 +73,8 @@ module VGATOP(
 
   assign pixX=pixel_x;
   assign pixY=pixel_y;
-  assign video_on1=video_on;
-	assign rgbIMAGE=rgb_imagenes;
+  //assign video_on1=video_on;
 
-//SIMULANDO BOTONES DEL TECLADO
-
-	wire aI,bI,cI,dI,upI,downI,leftI,rightI;
-	assign {aI,bI,cI,dI,upI,downI,leftI,rightI} = {1'b0,1'b1,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0};
 
 
 //---------------------------------------------
@@ -90,7 +87,7 @@ SIMBOLOS simb(
 .pix_x(pixel_x),
 .clk(clk),
 .reset(reset),
-.rgbtext(rgb_simbolo_next)
+.rgbtext(rgb_simbolo)
 );
 
 
@@ -102,7 +99,7 @@ HOURNUMBERS horasvga(
  .programar_on(programar_on),
  .direccion_actual_pantalla(direccion_actual_pantalla),
  .clk(clk),.reset(reset),
- .rgbtext(rgb_numero_hora_next),
+ .rgbtext(rgb_numero_hora),
  .hour_in1(hour_in1),
  .hour_in2(hour_in2),
  .hour_in3(hour_in3)
@@ -117,7 +114,7 @@ DATENUMBERS datevg(
 	.programar_on(programar_on),
   .direccion_actual_pantalla(direccion_actual_pantalla),
   .clk(clk),.reset(reset),
-  .rgbtext(rgb_numero_fecha_next),
+  .rgbtext(rgb_numero_fecha),
   .fecha_in1(fecha_in1),
 	.fecha_in2(fecha_in2),
 	.fecha_in3(fecha_in3)
@@ -133,7 +130,7 @@ TIMERNUMBERS cronovga(
 	 .programar_on(programar_on),
    .direccion_actual_pantalla(direccion_actual_pantalla),
    .clk(clk),.reset(reset),
-   .rgbtext(rgb_numero_timer_next),
+   .rgbtext(rgb_numero_timer),
    .timer_in1(timer_in1),
 	 .timer_in2(timer_in2),
 	 .timer_in3(timer_in3)
@@ -157,37 +154,66 @@ RING finish(
 		.pixel_x(pixel_x),
 		.clk(clk),
 		.reset(reset),
-		.rgbtext(rgb_ring_next)
+		.rgbtext(rgb_ring)
 );
 
 SQUARE sq(
 		.pix_y(pixel_y),.pix_x(pixel_x),
 		.video_on(video_on),
 		.reset(reset),
-		.rgbtext(rgb_bordes_next)
+		.rgbtext(rgb_bordes)
 );
 
 TEXTO texto(
 		.pixel_y(pixel_y),.pixel_x(pixel_x),
 		.clk(clk),
-		.rgbtext(rgb_letra_next)
+		.reset(reset),
+		.rgbtext(rgb_letra)
 );
+
+topkey KEYBOARD(
+	.clk(clk),
+	.reset(reset),
+	.ps2d(ps2d),
+	.ps2c(ps2c),
+	.rx_en(rx_en),
+	.a(a),
+	.b(b),
+	.c(c),
+	.d(d),
+	.up(up),
+	.down(down),
+	.left(left),
+	.right(right)
+	);
+
+
+
+	animado  LUCES(
+	  	.reset(reset),
+		  .clk(clk),
+			.pix_y(pixel_y),
+			.pix_x(pixel_x),
+			.video_on(video_on),
+	    .rgbtext(rgb_animado)
+	    );
+
 
 
 img IMAGENES(
       .clk(clk),
 			.reset(reset),
-			.aI(aI),
-			.bI(bI),
-			.cI(cI),
-			.dI(dI),
-			.upI(upI),
-			.downI(downI),
-			.leftI(leftI),
-			.rightI(rightI),
-			.pixel_x(pixX),
-		  .pixel_y(pixY),
-      .rgb(rgb_imagenes_next)
+			.aI(a),
+			.bI(b),
+			.cI(c),
+			.dI(d),
+			.upI(up),
+			.downI(down),
+			.leftI(left),
+			.rightI(right),
+			.pixel_x(pixel_x),
+		   .pixel_y(pixel_y),
+       .rgb(rgb_imagenes)
 
 );
 
@@ -206,14 +232,15 @@ SELECCIONADOR_RGB selector(
 			.rgb_bordes(rgb_bordes),
 			.rgb_simbolo(rgb_simbolo),
 			.rgb_imagen(rgb_imagenes),
-			.rgb_screen(rgb_next),
+			.rgb_animado(rgb_animado),
+			.rgb_screen(rgb),
 			.okh(okh),.okf(okf),.okt(okt)
 );
 
 //---------------------------------------------
 //					CUERPO
 //---------------------------------------------
-
+/*
 always @(posedge clk) begin
 		if(reset)begin
 			rgb_reg <= 0;
@@ -260,5 +287,5 @@ assign rgb_bordes = rgb_bordes_reg;
 //salida final a pantalla
 
 assign rgb=rgb_reg;
-
+*/
 endmodule

@@ -38,8 +38,7 @@ module SELECCIONADOR_RGB(
 //------------------------------------------------------------------------------
 //      VARIABLES DE CONTROL PARA ACTIVAR LA IMAGEN ADECUADA
 //-----------------------------------------------------------------------------
-//NOTA: NO SE ASIGNAN PARAMETROS YA QUE SON LOS MISMOS DE LOS MODULOS ANTERIORES, SOLO SE COPIAN LOS VALORES NUMERICOS.
-//      EN CASO DE REALIZARSE MULTIPLES CAMBIOS SI ES NECESARIO CAMBIAR ESTE MODULO, SI NO SE MANTIENE INTACTO
+
 //                       para numeros
 
     assign hour1on=(96<=pix_x) && (pix_x<=159) &&(64<=pix_y) && (pix_y<=127);

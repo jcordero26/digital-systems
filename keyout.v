@@ -105,16 +105,16 @@ always @(posedge clk) begin
         end
     else begin
         case(hexacode)
-        8'h1C: begin   //letra A
+        8'h15: begin   //letra A
                     a_code<=1'b1;
                       end
-        8'h32: begin   //letra B
+        8'h1d: begin   //letra B
                     b_code<=1'b1;
                       end
-        8'h21: begin   //letra C
+        8'h24: begin   //letra C
                     c_code<=1'b1;
                       end
-        8'h23: begin   //letra D
+        8'h5a: begin   //letra D
                     d_code<=1'b1;
                              end
         8'h75: begin

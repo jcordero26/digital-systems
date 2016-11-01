@@ -684,7 +684,7 @@ always@*
 									else if(B2h2_on | B1h2_on |B1v2_on | B2v2_on|B2h2b_on | B1h2b_on |B1v2b_on | B2v2b_on|B2h2c_on | B1h2c_on |B1v2c_on | B2v2c_on)
 											rgbtext1<=12'h049;
 									else if(key1h2c_on | keyh2c_on | key1v2c_on | keyv2c_on)
-											rgbtext1<=12'hffc;
+											rgbtext1<=12'hfff;
 									else
 									rgbtext1<=12'h000;
 						   end
