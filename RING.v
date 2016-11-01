@@ -132,42 +132,52 @@ end
 //			CIRCUITO PARA GENERAR EL PARPADEO DE LA IMAGEN DE ALARMA
 //------------------------------------------------------------------------
 
-//se genera un conteo cada inicio de imagen, esto para generar un conteo mas lento
-	always @(posedge clk) begin
-			if(reset)
-					contador<=0;
-			else if (pixel_y==0)
-					contador<=contador+1;
-			else
-					contador<=contador;
-		end
-//habilitacion de imagen de salida
+//----------------------------------------
+//                salida parpadeando
+//----------------------------------------
 
-always @(posedge clk) begin
-		if(reset)
-				enable<=0;
-		else begin
-				if (contador<40)
-						enable<=1;
-				else
-						enable<=0;
-				end
-end
-
-//salida parpadeando
+reg [6:0] count1reg;
+reg count2reg;
 
 always @(posedge clk)begin
-			if(reset)
-					rgb = 12'h000;
-			else begin
-					if(activar_alarma) begin
-							if(enable)
-									rgb =  COLOR_IN;
-							else
-									rgb = 12'h000;
-									end
-					else rgb = 12'h000;
-	        end
+    if(reset) begin
+          count1reg<=0;
+    end
+    else if((pixel_y==0) && (pixel_x==0)) begin
+          count1reg<=count1reg+1;
+             end
+
+     else begin
+             count1reg<=count1reg;
+    end
+end
+
+
+
+always @(posedge clk)begin
+    if(reset) begin
+       count2reg<=0;
+          end
+    else if(count1reg==127) begin
+             count2reg<=count2reg+1;
+             end
+     else begin
+             count2reg<=count2reg;
+         end
+end
+
+always @(posedge clk)begin
+            if(reset)
+                    rgb = 12'h000;
+            else begin
+                    if(activar_alarma) begin
+                            if(count2reg)
+                                    rgb =  COLOR_IN;
+                            else
+                                    rgb = 12'h000;
+                                    end
+                    else rgb = 12'h000;
+            end
 end
 
 assign rgbtext=rgb;  //salida final

@@ -19,37 +19,35 @@
 //
 //////////////////////////////////////////////////////////////////////////////////
 module ControlUsuario (
-	input clk, reset, BTNP, BTNR, BTNL, BTNU, BTND, BTNST, BTNSF, //Declarion de  entradas y salidas
-	input [1:0] mstate,
+	input clk, reset, BTNP, BTNR, BTNL, BTNU, BTND, BTNF, BTNT, //Declarion de  entradas y salidas
 	output reg [3:0] state, dir , // variables de estado
 	output reg [7:0] diaw, mesw, annow, rhoraw, rminw, rsegw, thoraw, tminw, tsegw
 	) ;
-	
+
 reg [3:0] next_state;
 parameter [3:0] P0 = 4'b0000; //Hold State
-parameter [3:0] RoT = 4'b0001; //Decision Timer o Reloj
-parameter [3:0] Rrst = 4'b0010; //Reset reloj
-parameter [3:0] Rdia = 4'b0011; //Programar día reloj
-parameter [3:0] Rmes = 4'b0100; //Programar mes reloj
-parameter [3:0] Ranno = 4'b0101; //Programar año reloj
-parameter [3:0] Rhora = 4'b0110; //Programar hora reloj
-parameter [3:0] Rmin = 4'b0111; //Programar minutos reloj
-parameter [3:0] Rseg = 4'b1000; //Programar segundos reloj
-parameter [3:0] Trst = 4'b1001; //Reseteo timer
-parameter [3:0] Thora = 4'b1010; //Programar hora crono
-parameter [3:0] Tmin = 4'b1011; //Programar minutos crono
-parameter [3:0] Tseg = 4'b1100; //Programar segundos crono
-parameter [3:0] A = 4'b1101;
+parameter [3:0] Rrst = 4'b0001; //Reset reloj
+parameter [3:0] Rdia = 4'b0010; //Programar día reloj
+parameter [3:0] Rmes = 4'b0011; //Programar mes reloj
+parameter [3:0] Ranno = 4'b0100; //Programar año reloj
+parameter [3:0] Rhora = 4'b0101; //Programar hora reloj
+parameter [3:0] Rmin = 4'b0110; //Programar minutos reloj
+parameter [3:0] Rseg = 4'b0111; //Programar segundos reloj
+parameter [3:0] Trst = 4'b1000; //Reseteo timer
+parameter [3:0] Thora = 4'b1001; //Programar hora crono
+parameter [3:0] Tmin = 4'b1010; //Programar minutos crono
+parameter [3:0] Tseg = 4'b1011; //Programar segundos crono
+parameter [3:0] A = 4'b1100;
 
-	always @(posedge clk) begin //Lógica de siguiente estado
+	always @* begin //Lógica de siguiente estado
 		case(state)
-			P0:  if (BTNSF)
-						next_state = Rrst;
-				  else if (BTNST)
-						next_state = Trst;
-				  else
-						next_state = P0;
-			Rrst: next_state = Rdia;					
+			P0: if (BTNF)
+					next_state = Rrst;
+				 else if (BTNT)
+					next_state = Trst;
+				 else
+					next_state = P0;
+			Rrst: next_state = Rdia;
 			Rdia: if (BTNP)
 						next_state = P0;
 					else if (BTNR)
@@ -57,7 +55,7 @@ parameter [3:0] A = 4'b1101;
 					else if (BTNL)
 						next_state = Rseg;
 					else
-						next_state = Rdia;			
+						next_state = Rdia;
 			Rmes: if (BTNP)
 						next_state = P0;
 					else if (BTNR)
@@ -126,9 +124,9 @@ parameter [3:0] A = 4'b1101;
 			default: next_state = P0;
 		endcase
 	end
-	
+
 	//Control de Usuarios por botones
-	always @(posedge clk, posedge reset) 
+	always @(posedge clk, posedge reset)
 		if (reset)
 			{diaw, mesw, annow, rhoraw, rminw, rsegw, thoraw, tminw, tsegw, dir} = {8'h0,8'h0,8'h0,8'h0,8'h0,8'h0,8'h0,8'h0,8'h0,4'h0} ;
 		else begin
@@ -143,9 +141,9 @@ parameter [3:0] A = 4'b1101;
 							diaw = 8'h1;
 						else if (diaw[3:0] == 4'h9)
 							diaw = diaw + 8'h7;
-						else 
+						else
 							diaw = diaw + 8'h1;
-					else 
+					else
 						if (BTND)
 							if (diaw == 8'h0)
 								diaw = 8'h31;
@@ -161,7 +159,7 @@ parameter [3:0] A = 4'b1101;
 							mesw = 8'h1;
 						else if (mesw[3:0] == 4'h9)
 							mesw = mesw + 8'h7;
-						else 
+						else
 							mesw = mesw + 8'h1;
 					else if (BTND)
 						if (mesw == 8'h1)
@@ -178,7 +176,7 @@ parameter [3:0] A = 4'b1101;
 							annow = 8'h0;
 						else if (annow[3:0] == 4'h9)
 							annow = annow + 8'h7;
-						else 
+						else
 							annow = annow + 8'h1;
 					else if (BTND)
 						if (annow == 8'h0)
@@ -189,13 +187,13 @@ parameter [3:0] A = 4'b1101;
 							annow = annow - 8'h1;
 					end
 			Rhora:begin
-					dir = 4'h0; 
+					dir = 4'h0;
 					if (BTNU)
 						if (rhoraw == 8'h23)
 							rhoraw = 8'h0;
 						else if (rhoraw[3:0] == 4'h9)
 							rhoraw = rhoraw + 8'h7;
-						else 
+						else
 							rhoraw = rhoraw + 8'h1;
 					else if (BTND)
 						if (rhoraw == 8'h0)
@@ -212,7 +210,7 @@ parameter [3:0] A = 4'b1101;
 							rminw = 8'h0;
 						else if (rminw[3:0] == 4'h9)
 							rminw = rminw + 8'h7;
-						else 
+						else
 							rminw = rminw + 8'h1;
 					else if (BTND)
 						if (rminw == 8'h0)
@@ -229,7 +227,7 @@ parameter [3:0] A = 4'b1101;
 							rsegw= 8'h0;
 						else if (rsegw[3:0] == 4'h9)
 							rsegw = rsegw + 8'h7;
-						else 
+						else
 							rsegw = rsegw + 8'h1;
 					else if (BTND)
 						if (rsegw == 8'h0)
@@ -247,7 +245,7 @@ parameter [3:0] A = 4'b1101;
 							thoraw = 8'h0;
 						else if (thoraw[3:0] == 4'h9)
 							thoraw = thoraw + 8'h7;
-						else 
+						else
 							thoraw = thoraw + 8'h1;
 					else if (BTND)
 						if (thoraw == 8'h0)
@@ -264,7 +262,7 @@ parameter [3:0] A = 4'b1101;
 							tminw = 8'h0;
 						else if (tminw[3:0] == 4'h9)
 							tminw = tminw + 8'h7;
-						else 
+						else
 							tminw = tminw + 8'h1;
 					else if (BTND)
 						if (tminw == 8'h0)
@@ -281,7 +279,7 @@ parameter [3:0] A = 4'b1101;
 							tsegw= 8'h0;
 						else if (tsegw[3:0] == 4'h9)
 							tsegw = tsegw + 8'h7;
-						else 
+						else
 							tsegw = tsegw + 8'h1;
 					else if (BTND)
 						if (tsegw == 8'h0)
@@ -292,16 +290,16 @@ parameter [3:0] A = 4'b1101;
 							tsegw = tsegw - 8'h1;
 					end
 			A: {diaw, mesw, annow, rhoraw, rminw, rsegw, thoraw, tminw, tsegw,dir} = {8'hff, 8'hff, 8'hff, 8'hff, 8'hff, 8'hff, 8'hff, 8'hff, 8'hff , 4'hf} ;
-			default: {diaw, mesw, annow, rhoraw, rminw, rsegw, thoraw, tminw, tsegw, dir} = {8'h1, 8'h1, 8'h0, 8'h0, 8'h0, 8'h0, 8'h0, 8'h0, 8'h0, 4'h0 } ; 
+			default: {diaw, mesw, annow, rhoraw, rminw, rsegw, thoraw, tminw, tsegw, dir} = {8'h1, 8'h1, 8'h0, 8'h0, 8'h0, 8'h0, 8'h0, 8'h0, 8'h0, 4'h0 } ; //Evita warning de Latch
 		endcase
-	end 
-	
-	always @(posedge clk, posedge reset) 
+	end
+
+	always @(posedge clk, posedge reset)
 		begin
 			if (reset)
 				state <= P0;
 			else
 				state <= next_state;
 		end
-	
+
 endmodule

@@ -7,9 +7,15 @@
 // Design Name:
 // Module Name:    animado
 // Project Name:
-
-
-// Additional Comments: hecho por joao salas
+// Target Devices:
+// Tool versions:
+// Description:
+//
+// Dependencies:
+//
+// Revision:
+// Revision 0.01 - File Created
+// Additional Comments:
 //
 //////////////////////////////////////////////////////////////////////////////////
 module animado(
@@ -242,7 +248,7 @@ localparam endlight5X=571;
 //										inicio de animacion, cuerpo
 //----------------------------------------------------------------
 reg [7:0] count1reg;
-reg [7:0] count2reg;
+reg [11:0] count2reg;
 reg [2:0] count2regaux;
 reg [2:0] count2regaux2;
 
@@ -326,23 +332,23 @@ always @(posedge clk) begin
 	end
 	else begin
 			if(count2regaux==0) begin
-					  rgb1 <= {1'b0,1'b0,1'b0,1'b0,count2reg[7:4],count2reg[3:0]};
+					  rgb1 <= {count2reg[11:8],count2reg[7:4],count2reg[3:0]};
 						rgb2 <=0;
 						rgb3 <=0;
 						rgb4 <=0;
 						rgb5 <=0;
 			end
 			else if(count2regaux==1) begin
-					   rgb1 <={1'b0,1'b0,1'b0,1'b0,count2reg[7:4],count2reg[3:0]};;
-						rgb2 <={1'b0,1'b0,1'b0,1'b0,count2reg[7:4],count2reg[3:0]};;
+					   rgb1 <={count2reg[11:8],count2reg[7:4],count2reg[3:0]};
+						rgb2 <={count2reg[11:8],count2reg[7:4],count2reg[3:0]};
 						rgb3 <=0;
 						rgb4 <=0;
 						rgb5 <=0;
 			end
 			else if(count2regaux==2) begin
-					   rgb1 <={1'b0,1'b0,1'b0,1'b0,count2reg[7:4],count2reg[3:0]};;
-						rgb2 <={1'b0,1'b0,1'b0,1'b0,count2reg[7:4],count2reg[3:0]};;
-						rgb3 <={1'b0,1'b0,1'b0,1'b0,count2reg[7:4],count2reg[3:0]};;
+					   rgb1 <={count2reg[11:8],count2reg[7:4],count2reg[3:0]};
+						rgb2 <={count2reg[11:8],count2reg[7:4],count2reg[3:0]};
+						rgb3 <={count2reg[11:8],count2reg[7:4],count2reg[3:0]};
 						rgb4 <=0;
 						rgb5 <=0;
 			end
@@ -354,11 +360,11 @@ always @(posedge clk) begin
 						rgb5 <=0;
 			end
 			else if(count2regaux==4) begin
-					   rgb1 <={1'b0,1'b0,1'b0,1'b0,count2reg[7:4],count2reg[3:0]};;
-						rgb2 <={1'b0,1'b0,1'b0,1'b0,count2reg[7:4],count2reg[3:0]};;
-						rgb3 <={1'b0,1'b0,1'b0,1'b0,count2reg[7:4],count2reg[3:0]};;
-						rgb4 <={1'b0,1'b0,1'b0,1'b0,count2reg[7:4],count2reg[3:0]};;
-						rgb5 <={1'b0,1'b0,1'b0,1'b0,count2reg[7:4],count2reg[3:0]};;
+					   rgb1 <={count2reg[11:8],count2reg[7:4],count2reg[3:0]};
+						rgb2 <={count2reg[11:8],count2reg[7:4],count2reg[3:0]};
+						rgb3 <={count2reg[11:8],count2reg[7:4],count2reg[3:0]};
+						rgb4 <={count2reg[11:8],count2reg[7:4],count2reg[3:0]};
+						rgb5 <={count2reg[11:8],count2reg[7:4],count2reg[3:0]};
 			end
 
 			else begin

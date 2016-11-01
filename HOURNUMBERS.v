@@ -4,7 +4,9 @@
 // Create Date:    22:01:21 09/22/2016
 // Design Name:
 // Module Name:    HOURNUMBERS
+
 // Description:  IMPRIME LOS NUMEROS DE LA HORA
+
 // Additional Comments: hecho por JOAO SALAS
 //
 //////////////////////////////////////////////////////////////////////////////////
