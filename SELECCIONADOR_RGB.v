@@ -39,6 +39,13 @@ module SELECCIONADOR_RGB(
 //      VARIABLES DE CONTROL PARA ACTIVAR LA IMAGEN ADECUADA
 //-----------------------------------------------------------------------------
 
+//                  NOTA IMPORTANTE
+    
+//  TODAS ESTAS COORDENADAS SON FOTOCOPIAS DE LOS PARAMETROS QUE SE ENCUENTRAN EN CADA
+//      MODULO DE VGA POR APARTA, POR ESTO DECIDI NO PARAMETRIZAR, YA QUE SOLO LAS TOME
+//         DE LOS OTROS MODULOS, COMO NO SE REALIZAN CAMBIOS DE COORDENAS EN ESTE MODULO
+//          NO COPIE LOS PARAMETROS.
+    
 //                       para numeros
 
     assign hour1on=(96<=pix_x) && (pix_x<=159) &&(64<=pix_y) && (pix_y<=127);
